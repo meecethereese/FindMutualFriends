@@ -1,0 +1,42 @@
+Solution to Sub-task: Setting Up
+
+The function setup takes only one argument, arr. Each element in an array assigned to arr is an
+array of two elements. For the two elements, create a property name in the object assigned to
+friends and reference it. If it exists already, directly reference it. Once referred to, add the
+other element to its array. Continue to do this for all arrays while updating the object assigned
+to friends to get the final answer.
+
+Solution to Sub-task: Map
+
+The function mapper takes only one argument, setup_arr. To map, iterate each element in the object
+on line 4. For each object’s key and corresponding friends’ array, create pairs of friends with
+the key where the smaller valued name comes first. All the pairs are assigned the same friends’
+array and made into an individual object. All objects are pushed into an array. Repeating this
+step for all object properties gives all combinations of mappings.
+
+Solution to Sub-task: Group
+
+The function group takes only one argument: mapped_arr. The elements are grouped by first
+iterating the array assigned to mapped_arr. Because objects only have one element, call the method
+Object.keys() on each object and index the first element (line 5). Use the extracted key to create
+a new property in the final object assigned to obj, if it does not exist. The value of the object
+is pushed into the array assigned to the corresponding key in the final object. Repeating this
+step for all objects of mapped_arr gives us grouped representation in the final object (obj).
+
+Solution to Sub-task: Reduce
+
+The function reducer takes only one argument, grouped_obj. Iterate this object to access each
+nested array to reduce it to a single array of mutuals. For each array in object, call the filter
+method on either nested arrays (line 7 to 10). You can filter on either array to find the mutuals.
+Additionally, exclude any value equal to either member of the pair. The filter method output is
+assigned to the pair’s property name, overwriting the previous nested array.
+
+Solution to Sub-task: Putting it All Together
+
+The mapreduce function takes only one argument, friends, which is expected to be an array of
+arrays. Take the argument. Pass it to the setup function for an object to be mapped which is
+assigned to the variable named initial (line 3). Then take this value and pass it to the mapper
+function. Assign the returned value to the mapped variable (line 4). Now passed to the group
+function, the result is assigned to the grouped variable (line 5). Finally, the value assigned to
+the grouped variable is passed on to the reducer function for the final answer. The final answer
+assigned to variable reduced is then returned on line 7.

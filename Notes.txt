@@ -1,0 +1,264 @@
+Educative.io: JavaScript in Detail: From Beginner to Advanced
+Mini Project #1: Find Mutual Friends
+
+Background
+
+Sometimes, you just don’t have enough computation power to solve a problem, regardless of how good
+your code is. That is when we jump on to parallelism, where you take independent tasks and have
+them compute in parallel on separate processors. The following diagram shows parallelism.
+
+It basically divides the task and does them independently with different workers. In this project,
+we will simulate the MapReduce framework on the problem of “Finding Mutual Friends.” Before first,
+let’s take a look at MapReduce.
+
+Introduction to MapReduce
+
+MapReduce is a framework for carrying out large scale distributed computing. The MapReduce framework
+consists of the two phases:
+
+Map: Takes input data and maps it into the form of key-value pairs. This is where the input data is
+processed before handing onto the reduce function. This procedure can be done in parallel as all
+data processing is independent of each other. The output is grouped under a single key before
+handing onto the reduce function.
+
+Reduce: This processes the output from the map function and reduces it into the final output.
+
+Map and reduce phases are done in parallel.
+
+In this project, we will simulate this MapReduce concept to finding mutual friends in a group of
+people.
+
+Problem Description
+
+A company wants to create a social media application called "FriendMe". This app will promote
+socializing between employees across offices. The application is almost complete but they need a
+feature that finds mutual friends between users. This feature can make users more comfortable with
+the app. Given that they have distributed servers across the globe, the CTO wants to use the
+MapReduce framework to implement this feature, distributing the computation overhead. The CTO wants
+you to simulate this feature in JavaScript.
+
+Task
+
+Your task in this project is to use your JavaScript knowledge to help implement the simulation of
+the MapReduce framework. Then, the CTO will know if it is possible to create a MapReduce
+implementation for the company’s servers.
+
+Step 1: Setup
+
+Task
+In this task, we will set up the raw data into a representation so we can use MapReduce. From the
+technical department, we have an array of pairs representing different friendships. Transform it
+into an object that can easily interface a friend list for any user.
+
+Problem Statement
+To complete this task, write code to complete making a function named setup. The function takes
+only one argument named arr, which has the following format.
+
+// input array
+arr = [
+  ['A' , 'B'],
+  ['A' , 'C'],
+  ['A' , 'D'],
+  ['B' , 'D'],
+];
+
+Each element in the array, assigned to arr, is a smaller array of two elements. The two elements
+are a string representation of the user (in this case, one character) representing that they are
+mutually friends.
+
+Your task: return an object where each property name is defined as the user with a property of the
+list of its corresponding friends.
+
+// output object
+var friends = {
+  'A' : ['B', 'C', 'D'],
+  'B' : ['A', 'D'],
+  'C' : ['A'],
+  'D' : ['A', 'B']
+}
+
+Write code that gives output in the above format. For an empty array, make sure to return an object
+with no properties at all.
+
+Step 2: Map
+
+Task
+In this task, we go over mapping each property of the object representation of the friends set up
+in the previous step. The mapping creates a cumulative list of friends for each pair of friends.
+Use an approach so that each property can be independently mapped; no information from any other
+property needs to be mapped. Moreover, the chosen key must make it easy to group in the next step.
+
+Problem statement
+To complete this task, write code to complete a function named mapper. The function takes only one
+argument, setup_arr, which has the following format.
+
+// input array
+setup_arr = {
+  'A' : ['B', 'C', 'D'],
+  'B' : ['A', 'D'],
+  'C' : ['A'],
+  'D' : ['A', 'B']
+};
+
+This is the output array from our previous step. Here, each property is an array of user’s friends
+represented as the property name in the object. Map each property of the object as follows.
+
+{ 'A' : ['B', 'C', 'D'] }
+ => // maps into the following
+[
+  { 'AB' : ['B', 'C', 'D'] },
+  { 'AC' : ['B', 'C', 'D'] },
+  { 'AD' : ['B', 'C', 'D'] },
+]
+
+Once mapped onto every element of the input object, you should get one unified array with all
+mapped elements like this.
+
+// output object
+var mapped_friends = [
+  { 'AB' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AC' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AD' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AB' : ['A', 'D'] }, // from 'B'
+  { 'BD' : ['A', 'D'] }, // from 'B'
+  { 'AC' : ['A'] }, // from 'C'
+  { 'AD' : ['A', 'B'] }, // from 'D'
+  { 'BD' : ['A', 'B'] }, // from 'D'
+]
+
+While pairing, follow the lexicographical ordering; the smaller alphabet comes first for each
+property name. The output above is the final output after completing the mapping function. Now,
+write code that gets the above output. For an empty object, return an array with no elements at all.
+
+Step 3: Group
+
+Task
+In this task, group each mapped object representation of the friends set up in the previous step.
+The mapping creates a cumulative list of friends for each pair. Now group the list of objects into
+a single object. Making sure to not overwrite any data.
+
+Problem statement
+For this task, write code to complete making a function named group. The function takes one
+argument. It is named mapped_arr and looks like this:
+
+// input array
+mapped_arr = [
+  { 'AB' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AC' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AD' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AB' : ['A', 'D'] }, // from 'B'
+  { 'BD' : ['A', 'D'] }, // from 'B'
+  { 'AC' : ['A'] }, // from 'C'
+  { 'AD' : ['A', 'B'] }, // from 'D'
+  { 'BD' : ['A', 'B'] }, // from 'D'
+];
+
+This is the output array from our previous step. Each element in array is an object. The object
+consists of only one property, the pair of friends ordered in lexicographical order. Group the
+array of objects into a single object. Here is the format in which the same property names are
+grouped.
+
+[
+  { 'AB' : ['B', 'C', 'D'] }, // from 'A'
+  { 'AB' : ['A', 'D'] }, // from 'B'
+];
+
+ => // groups into the following
+{
+  { 'AB' : [['B', 'C', 'D'],['A', 'D']] },
+};
+Without overwriting the array of the two users, create a new array and add the two arrays of
+friends to it. The resultant nested array will be assigned to the pair in the final object.
+
+// output object
+var grouped_friends = {
+  'AB' : [['B', 'C', 'D'], ['A', 'D']],
+  'AC' : [['B', 'C', 'D'], ['A']],
+  'AD' : [['B', 'C', 'D'], ['A', 'B']],
+  'BD' : [['A', 'D'], ['A', 'B']],
+};
+
+Your task is to ensure that neither of the arrays is lost while grouping for the two paired users.
+The output above should be the final output after completing group function. Now write code to help
+get that above output. Return an empty object for an empty array.
+
+Step 4: Reduce
+
+Task
+Now, we will reduce the grouped object from the previous step. Each property consists of a nested
+array, which we will update by reducing it to a single array consisting of mutual elements.
+
+Problem statement
+This time, write code to make a function named reducer. The function takes only one argument named
+grouped_obj, in the following format.
+
+// input array
+grouped_obj = {
+  'AB' : [['B', 'C', 'D'], ['A', 'D']],
+  'AC' : [['B', 'C', 'D'], ['A']],
+  'AD' : [['B', 'C', 'D'], ['A', 'B']],
+  'BD' : [['A', 'D'], ['A', 'B']],
+};
+
+This is the output object from the previous step. Reduce the two arrays into a single array where
+it contains the mutual elements of the both arrays.
+
+{
+  { 'AB' : [['B', 'C', 'D'],['A', 'D']] },
+};
+ => // groups into the following
+{
+  { 'AB' : ['D'] },
+};
+
+Exclude all uncommon elements and any elements equal to either user pair value. Remaining are
+mutual friends between 'A' and 'B'. Apply this reduction to the entire input object to get the
+following final output.
+
+// output object
+var reduced_obj = {
+  'AB' : ['D'],
+  'AC' : [],
+  'AD' : ['B'],
+  'BD' : ['A'],
+};
+
+The output above is the final output after completing reducer function. Write code that results in
+output in the above format. Remember to return an empty object for an empty object.
+
+Step 5: Putting it All Together
+
+Task
+In this task, we will complete our implementation of the MapReduce framework. We are now given the
+input from Step 1 and will use all the functions that we created previously to reach the final
+output.
+
+Problem statement
+To complete this task, write code to complete a function named mapreduce. Once again, the function
+takes only one argument, this time named friends and following this format.
+
+// input array
+arr = [
+  ['A' , 'B'],
+  ['A' , 'C'],
+  ['A' , 'D'],
+  ['B' , 'D'],
+];
+
+Here, each element in the array, assigned to arr, is a smaller array of two elements. The two
+elements are a string representation of the user (in this case, only one character) representing
+that they are friends with one another.
+
+Your task: return an object where each property name is defined as a pair of users with a property
+of the list of its corresponding mutual friends.
+
+// output object
+var output = {
+  'AB' : ['D'],
+  'AC' : [],
+  'AD' : ['B'],
+  'BD' : ['A'],
+};
+
+Make sure your code gets output in the above format. For an empty array, return an object with no
+properties at all.
